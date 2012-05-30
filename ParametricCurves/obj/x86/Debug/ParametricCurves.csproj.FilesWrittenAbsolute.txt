@@ -1,0 +1,5 @@
+/home/tony/Projects/ParametricCurves/ParametricCurves/obj/x86/Debug/ParametricCurves.gtk-gui.gui.stetic
+/home/tony/Projects/ParametricCurves/ParametricCurves/bin/Debug/ParametricCurves.exe.mdb
+/home/tony/Projects/ParametricCurves/ParametricCurves/bin/Debug/ParametricCurves.exe
+/home/tony/Projects/ParametricCurves/ParametricCurves/obj/x86/Debug/ParametricCurves.exe
+/home/tony/Projects/ParametricCurves/ParametricCurves/obj/x86/Debug/ParametricCurves.exe.mdb
