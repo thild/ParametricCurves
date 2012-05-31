@@ -22,9 +22,6 @@ public partial class MainWindow
 		this.canvas.Events = ((global::Gdk.EventMask)(256));
 		this.canvas.Name = "canvas";
 		this.fixed3.Add (this.canvas);
-		global::Gtk.Fixed.FixedChild w1 = ((global::Gtk.Fixed.FixedChild)(this.fixed3 [this.canvas]));
-		w1.X = 202;
-		w1.Y = 68;
 		this.Add (this.fixed3);
 		if ((this.Child != null)) {
 			this.Child.ShowAll ();

@@ -1,10 +1,10 @@
 ﻿<Properties>
   <MonoDevelop.Ide.Workspace ActiveConfiguration="Debug|x86" />
-  <MonoDevelop.Ide.Workbench ActiveDocument="ParametricCurves/MainWindow.cs">
+  <MonoDevelop.Ide.Workbench ActiveDocument="ParametricCurves/DrawingUtil.cs">
     <Files>
       <File FileName="ParametricCurves/Main.cs" Line="40" Column="6" />
-      <File FileName="ParametricCurves/MainWindow.cs" Line="37" Column="1" />
-      <File FileName="ParametricCurves/DrawingUtil.cs" Line="39" Column="83" />
+      <File FileName="ParametricCurves/MainWindow.cs" Line="110" Column="48" />
+      <File FileName="ParametricCurves/DrawingUtil.cs" Line="60" Column="47" />
     </Files>
   </MonoDevelop.Ide.Workbench>
   <MonoDevelop.Ide.DebuggingService.Breakpoints>

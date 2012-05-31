@@ -30,66 +30,66 @@ using ParametricCurves;
 
 public partial class MainWindow: Gtk.Window
 {    
+
+    class HermitePoint
+    {
+        public Gtk.DrawingArea Area { get; set; }
+
+        public Point Position { 
+            get {
+                var size = Area.GetSize ();
+                var point = Area.GetPosition();
+                point.X = point.X + size.Width / 2 ;
+                point.Y = point.Y + size.Width / 2 ;
+                return point;
+            }
+        }
+    }
+
+    HermitePoint[] hp = new HermitePoint[4];
+
     public MainWindow (): base (Gtk.WindowType.Toplevel)
     {
         Build ();
         canvas.ExposeEvent += OnExposed;
+        canvas.Move (0, 0);
+
+        fixed3.SizeAllocated += (o, args) => {
+            canvas.SetSizeRequest (fixed3.GetWidth (), fixed3.GetHeight ());
+        }  ;
         
         Gdk.Color col = new Gdk.Color ();
         Gdk.Color.Parse ("black", ref col);
         canvas.ModifyBg (StateType.Normal, col);
 
-        canvas.GdkWindow.Move(0,0);
-        canvas.SetSizeRequest (400, 200);
         
-        canvas.ButtonPressEvent += (o, args) => {
-            if (args.Event.Button == 1) {
-                if (flagp) {
-                    p1 = new Point ((int)args.Event.X, (int)args.Event.Y);
-                    flagp = false;
-                } else {
-                    p2 = new Point ((int)args.Event.X, (int)args.Event.Y);
-                    flagp = true;
-                }
-            }
-            if (args.Event.Button == 3) {
-                if (flagt) {
-                    t1 = new Point ((int)args.Event.X, (int)args.Event.Y);
-                    flagt = false;
-                } else {
-                    t2 = new Point ((int)args.Event.X, (int)args.Event.Y);
-                    flagt = true;
-                }
-            }
-            canvas.QueueDraw ();
+
+        hp [0] = CreateHermitePoint (new Color (255, 0, 0));
+        hp [1] = CreateHermitePoint (new Color (255, 0, 0));
+        hp [2] = CreateHermitePoint (new Color (0, 255, 0));
+        hp [3] = CreateHermitePoint (new Color (0, 255, 0));
+
+        fixed3.Put(hp [0].Area, 200, 100);
+        fixed3.Put(hp [1].Area, 100, 100);
+        fixed3.Put(hp [2].Area, 250, 200);
+        fixed3.Put(hp [3].Area, 100, 200);
+
+        hp [0].Area.ExposeEvent += (o, args) => {
+            hp [0].Area.DrawText (0, 0, "P1");
         };
 
-        var cp1 = new DrawingArea ();
-        col = new Gdk.Color ();
-        Gdk.Color.Parse ("red", ref col);
-        cp1.ModifyBg (StateType.Normal, col);
-        cp1.SetSizeRequest (6, 6);
-        cp1.AddEvents ((int)EventMask.AllEventsMask);
-        fixed3.Add (cp1);
-        
-        cp1.Show ();
-
-        bool drag = false;
-        Point p;
-
-        cp1.MotionNotifyEvent += (o, args) => {
-            if (drag) {
-                int x, y;
-                cp1.GdkWindow.GetPosition(out x, out y);
-                cp1.GdkWindow.Move ((int)args.Event.X + x - p.X, (int)args.Event.Y + y - p.Y);
-            }
-        }; 
-
-        cp1.ButtonPressEvent +=  (o, args) => {
-            drag = true;
-            p = new Point((int)args.Event.X, (int)args.Event.Y);
+        hp [1].Area.ExposeEvent += (o, args) => {
+            hp [1].Area.DrawText (0, 0, "P2");
         };
-        cp1.ButtonReleaseEvent +=  (o, args) => {drag = false;};
+
+        hp [2].Area.ExposeEvent += (o, args) => {
+            hp [2].Area.DrawText (0, 0, "T1");
+        };
+
+        hp [3].Area.ExposeEvent += (o, args) => {
+            hp [3].Area.DrawText (0, 0, "T2");
+        };
+
     }
     
     protected void OnDeleteEvent (object sender, DeleteEventArgs a)
@@ -104,19 +104,50 @@ public partial class MainWindow: Gtk.Window
         var gc = canvas.Style.BaseGC (StateType.Normal);
 //        g.DrawLine(gc, 0, 0, 400, 300);
 //        g.DrawPoint(gc, 5, 10);
-        g.DrawHermite (gc, p1, p2, t1, t2);
-        g.DrawArc (gc, true, p1.X - 3, p1.Y - 3, 6, 6, 0, 360 * 64);
-        g.DrawArc (gc, true, p2.X - 3, p2.Y - 3, 6, 6, 0, 360 * 64);
-        g.DrawArc (gc, true, t1.X - 3, t1.Y - 3, 6, 6, 0, 360 * 64);
-        g.DrawArc (gc, true, t2.X - 3, t2.Y - 3, 6, 6, 0, 360 * 64);
+        g.DrawHermite (
+            gc,
+            hp [0].Position,
+            hp [1].Position,
+            hp [2].Position,
+            hp [3].Position
+        );
+//        g.DrawArc (gc, true, hp[0].Point.X - 3, hp[0].Point.Y - 3, 6, 6, 0, 360 * 64);
+//        g.DrawArc (gc, true, hp[1].Point.X - 3, hp[1].Point.Y - 3, 6, 6, 0, 360 * 64);
+//        g.DrawArc (gc, true, hp[2].Point.X - 3, hp[2].Point.Y - 3, 6, 6, 0, 360 * 64);
+//        g.DrawArc (gc, true, hp[3].Point.X - 3, hp[3].Point.Y - 3, 6, 6, 0, 360 * 64);
 
     }
 
-    private Point p1, p2;
-    private Point t1, t2;
-    private bool flagp = true;
-    private bool flagt = true;
-
+    HermitePoint CreateHermitePoint (Color col)
+    {
+        var cp1 = new DrawingArea ();
+        cp1.ModifyBg (StateType.Normal, col);
+        cp1.SetSizeRequest (20, 20);
+        cp1.AddEvents ((int)EventMask.AllEventsMask);
+        fixed3.Add (cp1);
+        cp1.Show ();
+        bool drag = false;
+        Point p;
+        cp1.MotionNotifyEvent += (o, args) => {
+            if (drag) {
+                int x, y;
+                cp1.GdkWindow.GetPosition (out x, out y);
+                cp1.GdkWindow.Move (
+                    (int)args.Event.X + x - p.X,
+                    (int)args.Event.Y + y - p.Y
+                );
+            }
+            canvas.QueueDraw ();
+        };
+        cp1.ButtonPressEvent += (o, args) => {
+            drag = true;
+            p = new Point ((int)args.Event.X, (int)args.Event.Y);
+        };
+        cp1.ButtonReleaseEvent += (o, args) => {
+            drag = false;
+        };
+        return new HermitePoint (){Area = cp1 };
+    }
 
 }
 
