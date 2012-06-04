@@ -127,7 +127,7 @@ public partial class MainWindow: Gtk.Window
         fixed3.Add (cp1);
         cp1.Show ();
         bool drag = false;
-        Point p;
+        Point p = new Point();
         cp1.MotionNotifyEvent += (o, args) => {
             if (drag) {
                 int x, y;
